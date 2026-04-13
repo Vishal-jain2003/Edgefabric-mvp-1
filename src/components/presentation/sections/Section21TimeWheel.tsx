@@ -59,7 +59,7 @@ export function Section21TimeWheel({ active }: Props) {
           className="font-display font-bold mb-4"
           style={{ fontSize: "clamp(1.2rem, 2.8vw, 2rem)", color: "var(--ef-white)" }}
         >
-          Time Wheel Expiry (60 Buckets, 1s Tick)
+          Active Eviction(Time Wheel Expiry)
         </motion.h2>
 
         <div className="grid lg:grid-cols-[1.1fr_0.9fr] gap-5">
@@ -80,7 +80,7 @@ export function Section21TimeWheel({ active }: Props) {
               Reset
             </button>
             <div className="font-section text-xs mt-2" style={{ color: "var(--ef-gray)" }}>
-              Current bucket advances as: (i + 1) mod 60.
+              Current bucket advances as: (i + 1) mod k.
             </div>
           </div>
         </div>

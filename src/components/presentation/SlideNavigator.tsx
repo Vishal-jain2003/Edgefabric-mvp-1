@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 
 // ── Section imports ────────────────────────────────────────────────────
 import { Section01ColdOpen }     from "./sections/Section01ColdOpen";
+import { Section03TeamGallery }  from "./sections/Section03TeamGallery";
 import { Section02ScaleShock }   from "./sections/Section02ScaleShock";
 import { Section08EdgeFabric }   from "./sections/Section08EdgeFabric";
 import { Section09Architecture } from "./sections/Section09Architecture";
@@ -16,37 +17,42 @@ import { Section19Quorum }       from "./sections/Section19Quorum";
 import { Section20ReadRepair }   from "./sections/Section20ReadRepair";
 import { Section21TimeWheel }    from "./sections/Section21TimeWheel";
 import { Section22LRUEviction }  from "./sections/Section22LRUEviction";
+import { SectionGetPutDemo }     from "./sections/SectionGetPutDemo";
 
 const SECTIONS = [
   { label: "INTRO",              code: "01" },
-  { label: "EDGEFABRIC MVP",     code: "02" },
-  { label: "AI-NATIVE DEVELOPMENT", code: "03" },
+  { label: "THE TEAM",           code: "02" },
+  { label: "EDGEFABRIC MVP",     code: "03" },
   { label: "ARCHITECTURE",       code: "04" },
   { label: "CONSISTENT HASHING", code: "05" },
   { label: "GOSSIP PROTOCOL",    code: "06" },
-  { label: "QUORUM REPLICATION", code: "07" },
-  { label: "READ REPAIR",        code: "08" },
-  { label: "GET / PUT FLOW",     code: "09" },
+  { label: "REPLICATION",        code: "07" },
+  { label: "QUORUM REPLICATION", code: "08" },
+  { label: "READ REPAIR",        code: "09" },
   { label: "TIME WHEEL",         code: "10" },
   { label: "LRU EVICTION",       code: "11" },
-  { label: "TESTING & PERF",     code: "12" },
-  { label: "FUTURE ROADMAP",     code: "13" },
-  { label: "CLOSING",            code: "14" },
+  { label: "GET/PUT DEMO",       code: "12" },
+  { label: "TESTING & PERF",     code: "13" },
+  { label: "AI-NATIVE DEV",      code: "14" },
+  { label: "FUTURE ROADMAP",     code: "15" },
+  { label: "CONCLUSION",         code: "16" },
 ];
 
 const COMPONENTS = [
   Section01ColdOpen,
+  Section03TeamGallery,
   Section08EdgeFabric,
-  Section02ScaleShock,
   Section09Architecture,
   Section10HashRing,
   Section11Gossip,
+  Section18RequestFlow,
   Section19Quorum,
   Section20ReadRepair,
-  Section18RequestFlow,
   Section21TimeWheel,
   Section22LRUEviction,
+  SectionGetPutDemo,
   Section16Observability,
+  Section02ScaleShock,
   Section15MCP,
   Section17Closing,
 ];

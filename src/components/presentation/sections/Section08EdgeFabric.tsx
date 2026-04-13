@@ -7,7 +7,6 @@ const LETTERS = "EDGEFABRIC".split("");
 
 const requirements = [
   { name: "API & Client",       desc: "REST + gRPC client libraries" },
-  { name: "Traffic Mgmt",       desc: "Rate limiting, circuit breaking" },
   { name: "Data Distribution",  desc: "Consistent hash ring" },
   { name: "Cluster Membership", desc: "SWIM gossip protocol" },
   { name: "Health Checks",      desc: "Active + passive probing" },
@@ -17,7 +16,6 @@ const requirements = [
   { name: "Cost Design",        desc: "Resource-aware eviction" },
   {name :"Smoke Testing",        desc: "Chaos testing, canary releases" },
   { name: "CI/CD",              desc: "Blue-green, canary releases" },
-  { name: "Docs",               desc: "Runbooks, ADRs, API reference" },
 ];
 
 const reasons = [

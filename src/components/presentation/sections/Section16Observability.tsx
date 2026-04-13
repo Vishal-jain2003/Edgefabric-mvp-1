@@ -1,82 +1,218 @@
 import { motion } from "framer-motion";
-import { CountUp } from "../shared";
 
 interface Props { active: boolean; }
 
-const sloCards = [
-  { icon: "✅", metric: "Availability", value: "99.97%", target: "≥ 99.5%",  headroom: "0.47% headroom",  color: "var(--ef-green)" },
-  { icon: "✅", metric: "GET P95",      value: "4.2ms",  target: "≤ 10ms",   headroom: "2.38× faster",    color: "var(--ef-green)" },
-  { icon: "✅", metric: "Hit Rate",     value: "94.7%",  target: "≥ 80%",    headroom: "well above target", color: "var(--ef-green)" },
-  { icon: "✅", metric: "Rebalance δ",  value: "8.3%",   target: "≤ 10%",    headroom: "key movement",     color: "var(--ef-green)" },
-];
+const testEnvironment = {
+  region: "ap-south-1",
+  az: "ap-south-1a",
+  note: "Same AZ deployment for minimal network variability"
+};
 
-function Sparkline({ active }: { active: boolean }) {
-  const points = [20, 35, 25, 45, 30, 50, 40, 55, 38, 48, 42, 52, 45, 58, 50];
-  const maxP = Math.max(...points);
-  const pts = points.map((p, i) => `${(i / (points.length - 1)) * 200},${50 - (p / maxP) * 40}`).join(" ");
-  return (
-    <svg width="200" height="50" className="overflow-visible">
-      <polyline points={pts} fill="none" stroke="var(--ef-cyan)" strokeWidth="1.5"
-        style={{ opacity: active ? 1 : 0 }} />
-      <circle cx={pts.split(" ").at(-1)?.split(",")[0] ?? "200"} cy={pts.split(" ").at(-1)?.split(",")[1] ?? "10"} r="3"
-        fill="var(--ef-cyan)" style={{ filter: "drop-shadow(0 0 4px var(--ef-cyan))" }} />
-    </svg>
-  );
-}
+const loadProfiles = [
+  {
+    title: 'LOW LOAD',
+    users: 10,
+    requests: 600,
+    avgLatency: '6.49ms',
+    p95: '11.73ms',
+    throughput: '~10 req/s',
+    status: 'Excellent',
+    statusColor: 'var(--ef-green)',
+    color: '#10b981',
+    intensity: 15
+  },
+  {
+    title: 'STAGED LOAD',
+    users: 800,
+    requests: 120106,
+    avgLatency: '3.27ms',
+    p95: '5.49ms',
+    throughput: '~200 req/s',
+    status: 'Excellent',
+    statusColor: 'var(--ef-green)',
+    color: '#00e6e6',
+    intensity: 40
+  },
+  {
+    title: 'SPIKE LOAD',
+    users: 1000,
+    requests: 100066,
+    avgLatency: '820ms',
+    p95: '1.55s',
+    throughput: '~769 req/s',
+    status: 'Stable',
+    statusColor: 'var(--ef-cyan)',
+    color: '#f59e0b',
+    intensity: 70
+  },
+  {
+    title: 'HIGH LOAD',
+    users: 2000,
+    requests: 357733,
+    avgLatency: '1.34s',
+    p95: '2.7s',
+    throughput: '~742 req/s',
+    status: 'Bottleneck',
+    statusColor: 'var(--ef-amber)',
+    color: '#ef4444',
+    intensity: 100
+  },
+];
 
 export function Section16Observability({ active }: Props) {
   return (
-    <div className="slide-container px-8 md:px-16">
-      <div className="max-w-5xl w-full">
-        <motion.h2
+    <div className="slide-container px-4 md:px-8 py-6">
+      <div className="max-w-6xl w-full relative z-10 mx-auto">
+        {/* Header */}
+        <motion.div
           initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="font-display font-bold mb-6"
-          style={{ fontSize: "clamp(1.6rem, 4vw, 2.8rem)", color: "var(--ef-white)" }}
+          animate={active ? { opacity: 1, y: 0 } : { opacity: 0, y: -20 }}
+          transition={{ duration: 0.5 }}
+          className="text-center mb-6"
         >
-          You can't fix what you can't see.
-        </motion.h2>
+          <h2
+            className="font-display font-black leading-tight mb-2"
+            style={{
+              fontSize: "clamp(2rem, 5vw, 3.2rem)",
+              background: "linear-gradient(135deg, #00e6e6, #60a5fa, #34d399)",
+              backgroundClip: "text",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              color: "transparent",
+            }}
+          >
+            Load Testing & Performance
+          </h2>
+          <p className="font-body text-sm" style={{ color: "var(--ef-gray)" }}>
+            100% Success Rate across all test scenarios
+          </p>
+        </motion.div>
 
-        <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="space-y-4">
-          <div className="flex items-center justify-between glass rounded-xl p-4">
-            <div>
-              <div className="font-section text-xs" style={{ color: "var(--ef-cyan)" }}>PERFORMANCE SNAPSHOT</div>
-              <div className="font-body text-sm" style={{ color: "var(--ef-lgray)" }}>Quick summary from ap-south-1 / az: ap-south-1a — client and server co-located.</div>
+        {/* Test Environment */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={active ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.95 }}
+          transition={{ delay: 0.2, duration: 0.4 }}
+          className="mb-6 flex justify-center"
+        >
+          <div
+            className="inline-flex items-center gap-4 px-5 py-2 rounded-full"
+            style={{
+              background: "rgba(0,230,230,0.1)",
+              border: "1px solid rgba(0,230,230,0.3)",
+            }}
+          >
+            <div className="flex items-center gap-2">
+              <span className="text-sm">🌐</span>
+              <span className="font-section text-xs" style={{ color: "var(--ef-cyan)" }}>{testEnvironment.region}</span>
             </div>
-            <div className="text-sm font-section" style={{ color: "var(--ef-green)" }}>Stable · 0% errors</div>
+            <div className="w-px h-4" style={{ background: "rgba(0,230,230,0.3)" }} />
+            <div className="flex items-center gap-2">
+              <span className="text-sm">📍</span>
+              <span className="font-section text-xs" style={{ color: "var(--ef-gray)" }}>{testEnvironment.az}</span>
+            </div>
+            <div className="w-px h-4" style={{ background: "rgba(0,230,230,0.3)" }} />
+            <span className="font-body text-xs" style={{ color: "var(--ef-gray)" }}>{testEnvironment.note}</span>
           </div>
+        </motion.div>
 
-          <div className="grid md:grid-cols-2 gap-3">
-            {[
-              { title: 'LOW LOAD', v: '6.49 ms', p95: '11.73 ms', note: '10 VUs · 600 req' },
-              { title: 'STAGED', v: '3.27 ms', p95: '5.49 ms', note: 'up to 800 VUs · 120k req' },
-              { title: 'SPIKE', v: '820 ms', p95: '1.55 s', note: '50→1000 VUs in 10s' },
-              { title: 'STRESS', v: '1.34 s', p95: '2.7 s', note: 'up to 2000 VUs' },
-            ].map((c, i) => (
-              <div key={i} className="glass rounded-xl p-4">
-                <div className="flex items-center justify-between">
-                  <div className="font-section text-xs" style={{ color: "var(--ef-cyan)" }}>{c.title}</div>
-                  <div className="font-section text-xs" style={{ color: "var(--ef-gray)" }}>{c.note}</div>
-                </div>
-                <div className="mt-3 flex items-baseline gap-3">
-                  <div className="font-section text-2xl" style={{ color: i < 2 ? 'var(--ef-cyan)' : i === 2 ? 'var(--ef-amber)' : 'var(--ef-red)' }}>{c.v}</div>
-                  <div className="text-xs font-section" style={{ color: 'var(--ef-lgray)' }}>p95 {c.p95}</div>
-                </div>
-                <div className="mt-3">
-                  <div className="h-2 w-full rounded bg-[rgba(255,255,255,0.04)] overflow-hidden">
-                    <div style={{ width: i === 0 ? '1%' : i === 1 ? '0.5%' : i === 2 ? '27%' : '45%', background: i < 2 ? 'var(--ef-cyan)' : i === 2 ? '#f59e0b' : '#ef4444' }} className="h-full rounded" />
-                  </div>
-                </div>
+        {/* Test Scenarios Grid - 4 boxes */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          {loadProfiles.map((profile, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 30, scale: 0.9 }}
+              animate={active ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 30, scale: 0.9 }}
+              transition={{ delay: 0.3 + i * 0.12, duration: 0.5, type: "spring", stiffness: 100 }}
+              whileHover={{ scale: 1.02, transition: { duration: 0.2 } }}
+              className="rounded-xl p-5 relative overflow-hidden"
+              style={{
+                border: `2px solid ${profile.color}60`,
+                background: `${profile.color}15`,
+              }}
+            >
+              {/* Animated top intensity bar */}
+              <div className="absolute top-0 left-0 right-0 h-1.5 overflow-hidden" style={{ background: `${profile.color}30` }}>
+                <motion.div
+                  className="h-full"
+                  style={{ background: profile.color }}
+                  initial={{ width: 0 }}
+                  animate={active ? { width: `${profile.intensity}%` } : { width: 0 }}
+                  transition={{ delay: 0.5 + i * 0.15, duration: 1, ease: "easeOut" }}
+                />
               </div>
-            ))}
-          </div>
 
-          <div className="glass rounded-xl p-4 flex items-center justify-between">
-            <div className="font-section text-xs" style={{ color: "var(--ef-cyan)" }}>KEY TAKEAWAY</div>
-            <div className="font-body text-sm" style={{ color: "var(--ef-lgray)" }}>
-              Best performance: <strong>10–800 VUs</strong>. Tail latency rises past ~1000 VUs — focus on p95.
-            </div>
-          </div>
+              {/* Pulsing glow effect */}
+              <motion.div
+                className="absolute inset-0 rounded-xl pointer-events-none"
+                style={{ boxShadow: `inset 0 0 30px ${profile.color}20` }}
+                animate={active ? { opacity: [0.3, 0.6, 0.3] } : { opacity: 0 }}
+                transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+              />
+
+              {/* Header */}
+              <div className="mb-4 pt-2 relative">
+                <motion.div
+                  className="font-section text-sm font-bold"
+                  style={{ color: profile.color }}
+                  initial={{ x: -10, opacity: 0 }}
+                  animate={active ? { x: 0, opacity: 1 } : { x: -10, opacity: 0 }}
+                  transition={{ delay: 0.4 + i * 0.12 }}
+                >
+                  {profile.title}
+                </motion.div>
+                <motion.span
+                  className="inline-block mt-2 font-section text-[10px] px-2 py-1 rounded"
+                  style={{
+                    background: `${profile.statusColor}25`,
+                    color: profile.statusColor,
+                    border: `1px solid ${profile.statusColor}50`
+                  }}
+                  initial={{ scale: 0 }}
+                  animate={active ? { scale: 1 } : { scale: 0 }}
+                  transition={{ delay: 0.6 + i * 0.12, type: "spring", stiffness: 200 }}
+                >
+                  {profile.status}
+                </motion.span>
+              </div>
+
+              {/* Metrics with staggered animation */}
+              <div className="space-y-3 relative">
+                {[
+                  { label: 'VUs', value: profile.users.toLocaleString(), color: 'var(--ef-white)' },
+                  { label: 'Avg Latency', value: profile.avgLatency, color: 'var(--ef-cyan)' },
+                  { label: 'P95', value: profile.p95, color: 'var(--ef-cyan)' },
+                  { label: 'Throughput', value: profile.throughput, color: 'var(--ef-green)' },
+                ].map((metric, j) => (
+                  <motion.div
+                    key={j}
+                    className="flex justify-between items-center"
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={active ? { opacity: 1, x: 0 } : { opacity: 0, x: -10 }}
+                    transition={{ delay: 0.5 + i * 0.12 + j * 0.08 }}
+                  >
+                    <span className="font-section text-xs" style={{ color: "var(--ef-gray)" }}>{metric.label}</span>
+                    <span className="font-section text-sm font-bold" style={{ color: metric.color }}>
+                      {metric.value}
+                    </span>
+                  </motion.div>
+                ))}
+              </div>
+            </motion.div>
+          ))}
+        </div>
+
+        {/* Key Insight */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={active ? { opacity: 1, y: 0 } : { opacity: 0, y: 16 }}
+          transition={{ delay: 1 }}
+          className="mt-8 text-center"
+        >
+          <p className="font-body text-sm" style={{ color: "var(--ef-gray)" }}>
+            <span style={{ color: "var(--ef-green)" }}>✓ Optimal:</span> 10–800 VUs &nbsp;|&nbsp;
+            <span style={{ color: "var(--ef-amber)" }}>⚠ Bottleneck:</span> Beyond 1000+ VUs
+          </p>
         </motion.div>
       </div>
     </div>

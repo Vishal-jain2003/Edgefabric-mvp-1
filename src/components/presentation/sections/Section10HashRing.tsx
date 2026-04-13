@@ -170,7 +170,7 @@ export function Section10HashRing({ active }: Props) {
               className="glass-cyan rounded-xl p-3 mt-2"
             >
               <span className="font-section text-xs font-bold" style={{ color: "var(--ef-cyan)" }}>
-                Key movement during rebalance: ≤ 10%{" "}
+                Minimal Key Movement When a New Node Joins Or Remove{" "}
               </span>
               <span className="font-section text-xs" style={{ color: "var(--ef-gray)" }}>
                 (EdgeFabric guarantee)

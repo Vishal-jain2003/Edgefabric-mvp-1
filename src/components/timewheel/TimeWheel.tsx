@@ -47,7 +47,7 @@ export function TimeWheel({ buckets, currentBucket, tickCount, expiringKeys }: T
     <div className="glass rounded-xl p-3">
       <div className="flex items-center justify-between mb-2">
         <div className="font-section text-xs" style={{ color: "var(--ef-cyan)" }}>
-          TIME WHEEL (60 BUCKETS)
+          TIME WHEEL 
         </div>
         <div className="font-section text-xs" style={{ color: "var(--ef-gray)" }}>
           tick={tickCount}

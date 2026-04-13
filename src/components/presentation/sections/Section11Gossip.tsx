@@ -60,7 +60,7 @@ export function Section11Gossip({ active }: Props) {
   };
 
   const actText = {
-    1: { title: "ACT 1: Normal Operation", desc: 'Every 500ms, each node picks 2 random neighbors and shares what it knows. System is fully healthy.' },
+    1: { title: "ACT 1: Normal Operation", desc: 'Every fixed interval of time, each node picks  random nodes and shares what it knows. System is fully healthy.' },
     2: { title: "ACT 2: Node 3 → SUSPECT", desc: "Node 2 tried to reach Node 3 — no response in 2s. Node 3 marked SUSPECT. Gossip spreads the suspicion." },
     3: { title: "ACT 3: Node 3 → DEAD", desc: "After 5 failed indirect probes, Node 3 is marked DEAD. Load redistributes automatically. Zero human intervention." },
   };

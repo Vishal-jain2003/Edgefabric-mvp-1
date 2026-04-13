@@ -1,28 +1,24 @@
 import { motion } from "framer-motion";
-import { CountUp } from "../shared";
 
 interface Props { active: boolean; }
 
-const lines = [
-  "Cache early.",
-  "Cache smart.",
-  "Survive scale.",
-];
-
 const takeaways = [
-  "At scale, the same data is requested millions of times — cache is the only answer",
-  "WAL + SWIM + consistent hashing: the three pillars that kept us running at 3AM",
-  "Agentic ops isn't the future — it's what we shipped",
-  "99.97% availability isn't luck. It's architecture.",
-];
-
-const metrics = [
-  { label: "Availability",    value: 9997,  format: (n: number) => `${(n/100).toFixed(2)}%` },
-  { label: "GET P95",         value: 420,   format: (n: number) => `${(n/100).toFixed(1)}ms` },
-  { label: "Hit Rate",        value: 9470,  format: (n: number) => `${(n/100).toFixed(1)}%` },
-  { label: "Key Movement",    value: 830,   format: (n: number) => `≤${(n/100).toFixed(1)}%` },
-  { label: "Data Loss",       value: 0,     format: () => "0 bytes" },
-  { label: "Requirements Met",value: 12,   format: (n: number) => `${n}/12` },
+  {
+    text: "Millions of requests, same data — cache is the only answer",
+    highlight: "cache is the only answer",
+  },
+  {
+    text: "SWIM + consistent hashing — the pillars that keep us alive at 3AM",
+    highlight: "the pillars that keep us alive at 3AM",
+  },
+  {
+    text: "Nodes fail. Data doesn't. That's replication done right.",
+    highlight: "Data doesn't.",
+  },
+  {
+    text: "99.97% availability isn't luck. It's architecture.",
+    highlight: "It's architecture.",
+  },
 ];
 
 export function Section17Closing({ active }: Props) {
@@ -43,87 +39,105 @@ export function Section17Closing({ active }: Props) {
           WebkitMaskImage: "linear-gradient(to left, rgba(0,0,0,1), rgba(0,0,0,0.2) 62%, transparent)",
         }} />
 
-      <div className="max-w-5xl w-full relative z-10">
-        {/* Main lines */}
-        <div className="mb-10">
-          {lines.map((line, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: -60 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.3 + i * 0.5, duration: 0.7, type: "spring", damping: 14 }}
-              className="font-display font-black leading-tight"
+      <div className="max-w-6xl w-full relative z-10 mx-auto">
+        {/* Title & Thank You */}
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={active ? { opacity: 1, y: 0 } : { opacity: 0, y: -20 }}
+          transition={{ duration: 0.5 }}
+          className="text-center mb-8"
+        >
+          <motion.div
+            animate={active ? {
+              boxShadow: [
+                "0 0 20px rgba(0,212,255,0.3)",
+                "0 0 50px rgba(0,212,255,0.6)",
+                "0 0 20px rgba(0,212,255,0.3)",
+              ]
+            } : {}}
+            transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+            className="inline-block px-10 py-5 rounded-2xl mb-6"
+            style={{
+              background: "rgba(0,212,255,0.08)",
+              border: "2px solid var(--ef-cyan)",
+            }}
+          >
+            <div
+              className="font-display font-black text-4xl mb-2"
               style={{
-                fontSize: "clamp(2.5rem, 7vw, 5rem)",
-                color: i === 2 ? "var(--ef-cyan)" : "var(--ef-white)",
-                textShadow: i === 2 ? "0 0 30px rgba(0,212,255,0.5)" : "none",
+                background: "linear-gradient(135deg, #00e6e6, #60a5fa, #34d399)",
+                backgroundClip: "text",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                color: "transparent",
               }}
             >
-              {line}
-            </motion.div>
-          ))}
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 2.0 }}
-            className="font-section text-sm mt-2 text-right max-w-lg"
+              Thank You!
+            </div>
+            <div className="font-body text-base" style={{ color: "var(--ef-gray)" }}>
+              Questions? Let's go deeper.
+            </div>
+          </motion.div>
+        </motion.div>
+
+        {/* Conclusion Title */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={active ? { opacity: 1 } : { opacity: 0 }}
+          transition={{ delay: 0.3, duration: 0.4 }}
+          className="text-center mb-4"
+        >
+          <h2
+            className="font-display font-bold text-xl"
             style={{ color: "var(--ef-cyan)" }}
           >
-            — EdgeFabric
-          </motion.div>
-        </div>
+            Key Takeaways
+          </h2>
+        </motion.div>
 
-        {/* Takeaways */}
-        <div className="space-y-2 mb-8">
-          {takeaways.map((t, i) => (
+        {/* Takeaways at the end */}
+        <div className="grid md:grid-cols-2 gap-3">
+          {takeaways.map((item, i) => (
             <motion.div
               key={i}
               initial={{ opacity: 0, x: -30 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: 2.3 + i * 0.3 }}
-              className="flex items-start gap-3 font-body text-sm"
-              style={{ color: "var(--ef-lgray)" }}
+              animate={active ? { opacity: 1, x: 0 } : { opacity: 0, x: -30 }}
+              transition={{ delay: 0.4 + i * 0.12, duration: 0.4 }}
+              className="flex items-center gap-3 p-3 rounded-xl"
+              style={{
+                background: "rgba(10,15,30,0.6)",
+                border: "1px solid rgba(0,230,230,0.2)",
+                boxShadow: "0 0 15px rgba(0,230,230,0.1)",
+              }}
             >
-              <span style={{ color: "var(--ef-green)" }} className="flex-shrink-0">✓</span>
-              {t}
+              <motion.span
+                initial={{ scale: 0 }}
+                animate={active ? { scale: 1 } : { scale: 0 }}
+                transition={{ delay: 0.5 + i * 0.12, type: "spring", stiffness: 300 }}
+                className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-lg"
+                style={{
+                  background: "rgba(52,211,153,0.2)",
+                  border: "2px solid var(--ef-green)",
+                  color: "var(--ef-green)"
+                }}
+              >
+                ✓
+              </motion.span>
+              <p className="font-body text-sm" style={{ color: "var(--ef-lgray)", lineHeight: 1.4 }}>
+                {item.text.split(item.highlight).map((part, j, arr) => (
+                  <span key={j}>
+                    {part}
+                    {j < arr.length - 1 && (
+                      <span style={{ color: "var(--ef-cyan)", fontWeight: 600 }}>{item.highlight}</span>
+                    )}
+                  </span>
+                ))}
+              </p>
             </motion.div>
           ))}
         </div>
-
-        {/* Metric strip */}
-        <div className="grid grid-cols-3 md:grid-cols-6 gap-3 mb-8">
-          {metrics.map((m, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 3.6 + i * 0.15 }}
-              className="glass rounded-xl p-3 text-center"
-            >
-              <div className="font-section font-bold text-base" style={{ color: "var(--ef-cyan)" }}>
-                {active ? <CountUp to={m.value} duration={2000 + i * 100} active={active} format={m.format} /> : "–"}
-              </div>
-              <div className="font-body text-xs mt-0.5" style={{ color: "var(--ef-gray)" }}>{m.label}</div>
-            </motion.div>
-          ))}
-        </div>
-
-        {/* Final CTA */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 4.8 }}
-          className="text-center"
-          style={{ animation: "glow-pulse 3s ease-in-out infinite" }}
-        >
-          <div className="font-section text-lg font-bold" style={{ color: "var(--ef-cyan)", textShadow: "0 0 20px rgba(0,212,255,0.4)" }}>
-            EF
-          </div>
-          <div className="font-body text-sm mt-2" style={{ color: "var(--ef-gray)" }}>
-            Questions? Let's go deeper.
-          </div>
-        </motion.div>
       </div>
     </div>
   );
+}
 }
