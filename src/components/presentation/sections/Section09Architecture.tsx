@@ -29,10 +29,9 @@ const cacheNodes = [
 const FLOW = {
   clientToLb: 2.6,
   lbToRing: 3.2,
+  lbToDiscovery: 4.2,
   lbToCluster: 3.4,
   lbPolling: 4.8,
-  cloudMapToLb: 5.2,
-  cloudMapDelay: 2.2,
   ringRotate: 24,
   nodeBeat: 4.8,
 };
@@ -459,7 +458,7 @@ export function Section09Architecture({ active }: Props) {
             </div>
  
             <div className="pointer-events-none absolute inset-0">
-              <svg viewBox="0 0 1400 700" className="h-full w-full" aria-hidden="true">
+              <svg viewBox="0 0 1400 820" className="h-full w-full" aria-hidden="true">
                 <defs>
                   <marker id="section09Arrow" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
                     <path d="M0,0 L8,4 L0,8 Z" fill="rgba(255,255,255,0.72)" />
@@ -495,10 +494,10 @@ export function Section09Architecture({ active }: Props) {
 
                 {/* Client to Load Balancer */}
                 <line
-                  x1="200"
-                  y1="280"
-                  x2="220"
-                  y2="260"
+                  x1="218"
+                  y1="312"
+                  x2="254"
+                  y2="258"
                   stroke="rgba(255,255,255,0.58)"
                   strokeWidth="1.4"
                   markerEnd="url(#section09Arrow)"
@@ -506,79 +505,155 @@ export function Section09Architecture({ active }: Props) {
                   <animate attributeName="stroke-opacity" values="0.34;0.7;0.34" dur={`${FLOW.clientToLb}s`} repeatCount="indefinite" />
                 </line>
 
-                {/* Load Balancer to Hash Ring */}
+                {/* Load Balancer to AWS Service Discovery */}
                 <polyline
-                  points="520,240 540,240"
+                  points="574,286 620,286 620,664 1178,664 1178,710"
                   fill="none"
-                  stroke="rgba(255,255,255,0.56)"
-                  strokeWidth="1.4"
+                  stroke="rgba(167,139,250,0.66)"
+                  strokeWidth="1.35"
                   markerEnd="url(#section09Arrow)"
                 >
-                  <animate attributeName="stroke-opacity" values="0.28;0.6;0.28" dur={`${FLOW.lbToRing}s`} repeatCount="indefinite" begin="0.5s" />
+                  <animate attributeName="stroke-opacity" values="0.24;0.64;0.24" dur={`${FLOW.lbToDiscovery}s`} repeatCount="indefinite" begin="0.2s" />
                 </polyline>
 
-                {/* Hash Ring to Cache Cluster */}
+                {/* Load Balancer to Consistent Hash Ring (bidirectional) */}
+                <line
+                  x1="574"
+                  y1="246"
+                  x2="650"
+                  y2="246"
+                  stroke="rgba(255,255,255,0.62)"
+                  strokeWidth="1.45"
+                  markerStart="url(#section09Arrow)"
+                  markerEnd="url(#section09Arrow)"
+                >
+                  <animate attributeName="stroke-opacity" values="0.3;0.72;0.3" dur={`${FLOW.lbToRing}s`} repeatCount="indefinite" begin="0.45s" />
+                </line>
+
+                {/* Load Balancer to Distributed Cache Cluster */}
                 <polyline
-                  points="800,240 820,240"
+                  points="574,170 574,126 1000,126 1000,134"
                   fill="none"
-                  stroke="rgba(16,185,129,0.54)"
-                  strokeWidth="1.35"
+                  stroke="rgba(16,185,129,0.62)"
+                  strokeWidth="1.4"
                   markerEnd="url(#section09CyanArrow)"
                 >
-                  <animate attributeName="stroke-opacity" values="0.24;0.62;0.24" dur={`${FLOW.lbToCluster}s`} repeatCount="indefinite" begin="1.1s" />
+                  <animate attributeName="stroke-opacity" values="0.24;0.66;0.24" dur={`${FLOW.lbToCluster}s`} repeatCount="indefinite" begin="0.95s" />
+                </polyline>
+
+                {/* Polling path: Load Balancer to Distributed Cache Cluster */}
+                <polyline
+                  points="574,306 574,520 1000,520 1000,344"
+                  fill="none"
+                  stroke="rgba(16,185,129,0.58)"
+                  strokeWidth="1.3"
+                  strokeDasharray="6 6"
+                  markerEnd="url(#section09CyanArrow)"
+                >
+                  <animate attributeName="stroke-opacity" values="0.2;0.58;0.2" dur={`${FLOW.lbPolling}s`} repeatCount="indefinite" begin="1.2s" />
                 </polyline>
 
                 {active && (
                   <>
                     {/* Client to LB animated dot */}
                     <motion.circle
-                      cx="200"
-                      cy="280"
+                      cx="218"
+                      cy="312"
                       r="3.5"
                       fill="#ffffff"
                       filter="url(#glowWhite)"
                       opacity="0"
                       animate={{
-                        cx: ["200", "220"],
-                        cy: ["280", "260"],
+                        cx: ["218", "254"],
+                        cy: ["312", "258"],
                         opacity: [0, 0.85, 0.85, 0],
                         r: [2.8, 3.8, 3.8, 2.8],
                       }}
                       transition={{ duration: FLOW.clientToLb, repeat: Infinity, ease: "linear" }}
                     />
 
-                    {/* LB to Ring animated dot */}
+                    {/* LB to discovery animated dot */}
                     <motion.circle
-                      cx="520"
-                      cy="240"
+                      cx="574"
+                      cy="286"
+                      r="3.2"
+                      fill="#a78bfa"
+                      filter="url(#glowPurple)"
+                      opacity="0"
+                      animate={{
+                        cx: ["574", "620", "620", "1178", "1178"],
+                        cy: ["286", "286", "664", "664", "710"],
+                        opacity: [0, 0.74, 0.74, 0.74, 0],
+                        r: [2.5, 3.4, 3.4, 3.4, 2.5],
+                      }}
+                      transition={{ duration: FLOW.lbToDiscovery, repeat: Infinity, ease: "linear", delay: 0.2 }}
+                    />
+
+                    {/* LB to ring animated dots (bidirectional) */}
+                    <motion.circle
+                      cx="574"
+                      cy="246"
                       r="3.3"
                       fill="#ffffff"
                       filter="url(#glowWhite)"
                       opacity="0"
                       animate={{
-                        cx: ["520", "540"],
-                        cy: ["240", "240"],
+                        cx: ["574", "650"],
+                        cy: ["246", "246"],
                         opacity: [0, 0.72, 0.72, 0],
                         r: [2.6, 3.6, 3.6, 2.6],
                       }}
                       transition={{ duration: FLOW.lbToRing, repeat: Infinity, ease: "linear", delay: 0.5 }}
                     />
 
-                    {/* Ring to Cluster animated dot */}
                     <motion.circle
-                      cx="800"
-                      cy="240"
+                      cx="650"
+                      cy="246"
+                      r="3.3"
+                      fill="#ffffff"
+                      filter="url(#glowWhite)"
+                      opacity="0"
+                      animate={{
+                        cx: ["650", "574"],
+                        cy: ["246", "246"],
+                        opacity: [0, 0.72, 0.72, 0],
+                        r: [2.6, 3.6, 3.6, 2.6],
+                      }}
+                      transition={{ duration: FLOW.lbToRing, repeat: Infinity, ease: "linear", delay: 1.2 }}
+                    />
+
+                    {/* LB to cluster animated dot */}
+                    <motion.circle
+                      cx="574"
+                      cy="170"
                       r="3.6"
                       fill="#10b981"
                       filter="url(#glowCyan)"
                       opacity="0"
                       animate={{
-                        cx: ["800", "820"],
-                        cy: ["240", "240"],
+                        cx: ["574", "574", "1000", "1000"],
+                        cy: ["170", "126", "126", "134"],
                         opacity: [0, 0.76, 0.76, 0],
                         r: [2.8, 3.8, 3.8, 2.8],
                       }}
-                      transition={{ duration: FLOW.lbToCluster, repeat: Infinity, ease: "linear", delay: 1.1 }}
+                      transition={{ duration: FLOW.lbToCluster, repeat: Infinity, ease: "linear", delay: 0.95 }}
+                    />
+
+                    {/* LB polling to cluster animated dot */}
+                    <motion.circle
+                      cx="574"
+                      cy="306"
+                      r="3.4"
+                      fill="#10b981"
+                      filter="url(#glowCyan)"
+                      opacity="0"
+                      animate={{
+                        cx: ["574", "574", "1000", "1000"],
+                        cy: ["306", "520", "520", "344"],
+                        opacity: [0, 0.68, 0.68, 0],
+                        r: [2.7, 3.6, 3.6, 2.7],
+                      }}
+                      transition={{ duration: FLOW.lbPolling, repeat: Infinity, ease: "linear", delay: 1.2 }}
                     />
                   </>
                 )}

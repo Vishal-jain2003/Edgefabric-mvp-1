@@ -140,4 +140,3 @@ export function Section17Closing({ active }: Props) {
     </div>
   );
 }
-}

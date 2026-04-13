@@ -5,11 +5,22 @@ import { LRUCache, type LRUNode } from "@/engine/lruCache";
 
 interface Props { active: boolean; }
 
+// 2 MB cache size in KB
+const CACHE_SIZE_KB = 2048;
+
+// Random sizes in KB
+const KEY_SIZES_KB = [700, 650, 350, 550];
+
+function getRandomSize(): number {
+  return KEY_SIZES_KB[Math.floor(Math.random() * KEY_SIZES_KB.length)];
+}
+
 export function Section22LRUEviction({ active }: Props) {
-  const cacheRef = useRef(new LRUCache(2048));
+  const cacheRef = useRef(new LRUCache(CACHE_SIZE_KB));
   const [order, setOrder] = useState<LRUNode[]>([]);
-  const [memory, setMemory] = useState({ current: 0, max: 2048 });
+  const [memory, setMemory] = useState({ current: 0, max: CACHE_SIZE_KB });
   const [evicted, setEvicted] = useState<string[]>([]);
+  const [lastInsertedSize, setLastInsertedSize] = useState<number>(0);
 
   const sync = () => {
     setOrder(cacheRef.current.getOrder());
@@ -17,18 +28,21 @@ export function Section22LRUEviction({ active }: Props) {
   };
 
   const seed = () => {
-    cacheRef.current = new LRUCache(2048);
-    cacheRef.current.put("old-key-1", 512);
-    cacheRef.current.put("old-key-2", 512);
-    cacheRef.current.put("recent-key", 384);
+    cacheRef.current = new LRUCache(CACHE_SIZE_KB);
+    cacheRef.current.put("user-123", 650);
+    cacheRef.current.put("session-456", 550);
+    cacheRef.current.put("cache-789", 350);
     setEvicted([]);
+    setLastInsertedSize(0);
     sync();
   };
 
   const insert = () => {
-    const key = `new-${Math.floor(Math.random() * 100)}`;
-    const result = cacheRef.current.put(key, 700);
+    const key = `key-${Math.floor(Math.random() * 1000)}`;
+    const size = getRandomSize();
+    const result = cacheRef.current.put(key, size);
     setEvicted(result.evicted);
+    setLastInsertedSize(size);
     sync();
   };
 
@@ -58,14 +72,17 @@ export function Section22LRUEviction({ active }: Props) {
 
           <div className="glass rounded-xl p-4 space-y-2">
             <div className="font-section text-xs" style={{ color: "var(--ef-cyan)" }}>INTERACTIONS</div>
+            <div className="text-[10px] font-section mb-2 px-2 py-1 rounded" style={{ background: "rgba(0,230,230,0.1)", color: "var(--ef-gray)" }}>
+              Cache: 2 MB • Key sizes: 700KB, 650KB, 350KB, 550KB (random)
+            </div>
             <button onClick={insert} className="w-full rounded-lg py-2 font-section text-xs" style={{ background: "rgba(239,68,68,0.12)", border: "1px solid rgba(239,68,68,0.4)", color: "#ef4444" }}>
-              Insert 700B Entry (Force Eviction)
+              Insert Random Key {lastInsertedSize > 0 && `(last: ${lastInsertedSize}KB)`}
             </button>
             <button onClick={accessTop} className="w-full rounded-lg py-2 font-section text-xs" style={{ background: "rgba(16,185,129,0.12)", border: "1px solid rgba(16,185,129,0.4)", color: "#10b981" }}>
-              Access Near-LRU Entry
+              Access Near-LRU Entry (Move to MRU)
             </button>
             <button onClick={seed} className="w-full rounded-lg py-2 font-section text-xs" style={{ background: "rgba(59,130,246,0.12)", border: "1px solid rgba(59,130,246,0.4)", color: "#60a5fa" }}>
-              Reset
+              Reset Cache
             </button>
             <div className="font-section text-xs mt-2" style={{ color: "var(--ef-gray)" }}>
               Eviction source is always tail (least-recently used).
@@ -79,3 +96,4 @@ export function Section22LRUEviction({ active }: Props) {
     </div>
   );
 }
+ 
