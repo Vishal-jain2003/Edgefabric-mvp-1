@@ -2,217 +2,236 @@ import { motion } from "framer-motion";
 
 interface Props { active: boolean; }
 
-const testEnvironment = {
-  region: "ap-south-1",
-  az: "ap-south-1a",
-  note: "Same AZ deployment for minimal network variability"
-};
-
 const loadProfiles = [
   {
     title: 'LOW LOAD',
     users: 10,
-    requests: 600,
-    avgLatency: '6.49ms',
-    p95: '11.73ms',
-    throughput: '~10 req/s',
-    status: 'Excellent',
-    statusColor: 'var(--ef-green)',
+    duration: '1 min',
+    requests: '600',
+    avgLatency: 6.49,
+    p95: 11.73,
+    throughput: 10,
+    successRate: 100,
     color: '#10b981',
-    intensity: 15
+    bgGradient: 'linear-gradient(135deg, rgba(16,185,129,0.15), rgba(16,185,129,0.05))',
   },
   {
     title: 'STAGED LOAD',
     users: 800,
-    requests: 120106,
-    avgLatency: '3.27ms',
-    p95: '5.49ms',
-    throughput: '~200 req/s',
-    status: 'Excellent',
-    statusColor: 'var(--ef-green)',
+    duration: '10 min',
+    requests: '120,106',
+    avgLatency: 3.27,
+    p95: 5.49,
+    throughput: 200,
+    successRate: 100,
     color: '#00e6e6',
-    intensity: 40
+    bgGradient: 'linear-gradient(135deg, rgba(0,230,230,0.15), rgba(0,230,230,0.05))',
   },
   {
-    title: 'SPIKE LOAD',
-    users: 1000,
-    requests: 100066,
-    avgLatency: '820ms',
-    p95: '1.55s',
-    throughput: '~769 req/s',
-    status: 'Stable',
-    statusColor: 'var(--ef-cyan)',
-    color: '#f59e0b',
-    intensity: 70
-  },
-  {
-    title: 'HIGH LOAD',
-    users: 2000,
-    requests: 357733,
-    avgLatency: '1.34s',
-    p95: '2.7s',
-    throughput: '~742 req/s',
-    status: 'Bottleneck',
-    statusColor: 'var(--ef-amber)',
-    color: '#ef4444',
-    intensity: 100
+    title: 'High LOAD',
+    users: 200,
+    duration: '1 min',
+    requests: '46,013',
+    avgLatency: 260.83,
+    p95: 321.54,
+    throughput: 765,
+    successRate: 100,
+    color: '#60a5fa',
+    bgGradient: 'linear-gradient(135deg, rgba(96,165,250,0.15), rgba(96,165,250,0.05))',
   },
 ];
 
+function LatencyBar({ value, max, color, label, active }: { value: number; max: number; color: string; label: string; active: boolean }) {
+  const percentage = Math.min((value / max) * 100, 100);
+  return (
+    <div className="space-y-1">
+      <div className="flex justify-between items-center">
+        <span className="font-section text-[9px]" style={{ color: "var(--ef-gray)" }}>{label}</span>
+        <span className="font-mono text-[10px] font-bold" style={{ color }}>{value}ms</span>
+      </div>
+      <div className="h-1.5 rounded-full overflow-hidden" style={{ background: "rgba(255,255,255,0.1)" }}>
+        <motion.div
+          className="h-full rounded-full"
+          style={{ background: color }}
+          initial={{ width: 0 }}
+          animate={active ? { width: `${percentage}%` } : { width: 0 }}
+          transition={{ duration: 1, delay: 0.5, ease: "easeOut" }}
+        />
+      </div>
+    </div>
+  );
+}
+
 export function Section16Observability({ active }: Props) {
   return (
-    <div className="slide-container px-4 md:px-8 py-6">
+    <div className="slide-container px-4 md:px-8 py-4">
       <div className="max-w-6xl w-full relative z-10 mx-auto">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={active ? { opacity: 1, y: 0 } : { opacity: 0, y: -20 }}
           transition={{ duration: 0.5 }}
-          className="text-center mb-6"
+          className="text-center mb-5"
         >
           <h2
-            className="font-display font-black leading-tight mb-2"
+            className="font-display font-black leading-tight"
             style={{
-              fontSize: "clamp(2rem, 5vw, 3.2rem)",
+              fontSize: "clamp(1.6rem, 3.5vw, 2.4rem)",
               background: "linear-gradient(135deg, #00e6e6, #60a5fa, #34d399)",
               backgroundClip: "text",
               WebkitBackgroundClip: "text",
               WebkitTextFillColor: "transparent",
-              color: "transparent",
             }}
           >
-            Load Testing & Performance
+            Load Testing Results
           </h2>
-          <p className="font-body text-sm" style={{ color: "var(--ef-gray)" }}>
-            100% Success Rate across all test scenarios
-          </p>
-        </motion.div>
-
-        {/* Test Environment */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={active ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.95 }}
-          transition={{ delay: 0.2, duration: 0.4 }}
-          className="mb-6 flex justify-center"
-        >
-          <div
-            className="inline-flex items-center gap-4 px-5 py-2 rounded-full"
-            style={{
-              background: "rgba(0,230,230,0.1)",
-              border: "1px solid rgba(0,230,230,0.3)",
-            }}
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={active ? { opacity: 1 } : { opacity: 0 }}
+            transition={{ delay: 0.2 }}
+            className="font-body text-xs mt-1"
+            style={{ color: "var(--ef-gray)" }}
           >
-            <div className="flex items-center gap-2">
-              <span className="text-sm">🌐</span>
-              <span className="font-section text-xs" style={{ color: "var(--ef-cyan)" }}>{testEnvironment.region}</span>
-            </div>
-            <div className="w-px h-4" style={{ background: "rgba(0,230,230,0.3)" }} />
-            <div className="flex items-center gap-2">
-              <span className="text-sm">📍</span>
-              <span className="font-section text-xs" style={{ color: "var(--ef-gray)" }}>{testEnvironment.az}</span>
-            </div>
-            <div className="w-px h-4" style={{ background: "rgba(0,230,230,0.3)" }} />
-            <span className="font-body text-xs" style={{ color: "var(--ef-gray)" }}>{testEnvironment.note}</span>
-          </div>
+            ap-south-1 • Same AZ deployment • Zero failures across all tests
+          </motion.p>
         </motion.div>
 
-        {/* Test Scenarios Grid - 4 boxes */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        {/* Main Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4">
           {loadProfiles.map((profile, i) => (
             <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 30, scale: 0.9 }}
-              animate={active ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 30, scale: 0.9 }}
-              transition={{ delay: 0.3 + i * 0.12, duration: 0.5, type: "spring", stiffness: 100 }}
-              whileHover={{ scale: 1.02, transition: { duration: 0.2 } }}
-              className="rounded-xl p-5 relative overflow-hidden"
+              key={profile.title}
+              initial={{ opacity: 0, y: 30 }}
+              animate={active ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
+              transition={{ delay: 0.2 + i * 0.1, duration: 0.5 }}
+              className="rounded-xl p-4 relative overflow-hidden"
               style={{
-                border: `2px solid ${profile.color}60`,
-                background: `${profile.color}15`,
+                background: profile.bgGradient,
+                border: `1px solid ${profile.color}40`,
               }}
             >
-              {/* Animated top intensity bar */}
-              <div className="absolute top-0 left-0 right-0 h-1.5 overflow-hidden" style={{ background: `${profile.color}30` }}>
-                <motion.div
-                  className="h-full"
-                  style={{ background: profile.color }}
-                  initial={{ width: 0 }}
-                  animate={active ? { width: `${profile.intensity}%` } : { width: 0 }}
-                  transition={{ delay: 0.5 + i * 0.15, duration: 1, ease: "easeOut" }}
-                />
-              </div>
-
-              {/* Pulsing glow effect */}
+              {/* Animated top bar */}
               <motion.div
-                className="absolute inset-0 rounded-xl pointer-events-none"
-                style={{ boxShadow: `inset 0 0 30px ${profile.color}20` }}
-                animate={active ? { opacity: [0.3, 0.6, 0.3] } : { opacity: 0 }}
-                transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                className="absolute top-0 left-0 h-1"
+                style={{ background: profile.color }}
+                initial={{ width: 0 }}
+                animate={active ? { width: "100%" } : { width: 0 }}
+                transition={{ delay: 0.4 + i * 0.1, duration: 0.8 }}
               />
 
               {/* Header */}
-              <div className="mb-4 pt-2 relative">
-                <motion.div
-                  className="font-section text-sm font-bold"
-                  style={{ color: profile.color }}
-                  initial={{ x: -10, opacity: 0 }}
-                  animate={active ? { x: 0, opacity: 1 } : { x: -10, opacity: 0 }}
-                  transition={{ delay: 0.4 + i * 0.12 }}
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2">
+                  <div
+                    className="w-3 h-3 rounded-full"
+                    style={{ background: profile.color, boxShadow: `0 0 10px ${profile.color}` }}
+                  />
+                  <span className="font-section text-sm font-bold" style={{ color: profile.color }}>
+                    {profile.title}
+                  </span>
+                </div>
+                <span
+                  className="font-section text-[9px] px-2 py-0.5 rounded-full"
+                  style={{ background: "rgba(16,185,129,0.2)", color: "var(--ef-green)", border: "1px solid rgba(16,185,129,0.4)" }}
                 >
-                  {profile.title}
-                </motion.div>
-                <motion.span
-                  className="inline-block mt-2 font-section text-[10px] px-2 py-1 rounded"
-                  style={{
-                    background: `${profile.statusColor}25`,
-                    color: profile.statusColor,
-                    border: `1px solid ${profile.statusColor}50`
-                  }}
-                  initial={{ scale: 0 }}
-                  animate={active ? { scale: 1 } : { scale: 0 }}
-                  transition={{ delay: 0.6 + i * 0.12, type: "spring", stiffness: 200 }}
-                >
-                  {profile.status}
-                </motion.span>
+                  100% Success
+                </span>
               </div>
 
-              {/* Metrics with staggered animation */}
-              <div className="space-y-3 relative">
-                {[
-                  { label: 'VUs', value: profile.users.toLocaleString(), color: 'var(--ef-white)' },
-                  { label: 'Avg Latency', value: profile.avgLatency, color: 'var(--ef-cyan)' },
-                  { label: 'P95', value: profile.p95, color: 'var(--ef-cyan)' },
-                  { label: 'Throughput', value: profile.throughput, color: 'var(--ef-green)' },
-                ].map((metric, j) => (
+              {/* Stats Grid */}
+              <div className="grid grid-cols-3 gap-2 mb-4 pb-3" style={{ borderBottom: `1px solid ${profile.color}20` }}>
+                <div className="text-center">
                   <motion.div
-                    key={j}
-                    className="flex justify-between items-center"
-                    initial={{ opacity: 0, x: -10 }}
-                    animate={active ? { opacity: 1, x: 0 } : { opacity: 0, x: -10 }}
-                    transition={{ delay: 0.5 + i * 0.12 + j * 0.08 }}
+                    className="font-display text-xl font-bold"
+                    style={{ color: "var(--ef-white)" }}
+                    initial={{ scale: 0 }}
+                    animate={active ? { scale: 1 } : { scale: 0 }}
+                    transition={{ delay: 0.5 + i * 0.1, type: "spring" }}
                   >
-                    <span className="font-section text-xs" style={{ color: "var(--ef-gray)" }}>{metric.label}</span>
-                    <span className="font-section text-sm font-bold" style={{ color: metric.color }}>
-                      {metric.value}
-                    </span>
+                    {profile.users}
                   </motion.div>
-                ))}
+                  <div className="font-section text-[8px]" style={{ color: "var(--ef-gray)" }}>VUs</div>
+                </div>
+                <div className="text-center">
+                  <motion.div
+                    className="font-display text-xl font-bold"
+                    style={{ color: "var(--ef-white)" }}
+                    initial={{ scale: 0 }}
+                    animate={active ? { scale: 1 } : { scale: 0 }}
+                    transition={{ delay: 0.55 + i * 0.1, type: "spring" }}
+                  >
+                    {profile.duration}
+                  </motion.div>
+                  <div className="font-section text-[8px]" style={{ color: "var(--ef-gray)" }}>Duration</div>
+                </div>
+                <div className="text-center">
+                  <motion.div
+                    className="font-display text-xl font-bold"
+                    style={{ color: profile.color }}
+                    initial={{ scale: 0 }}
+                    animate={active ? { scale: 1 } : { scale: 0 }}
+                    transition={{ delay: 0.6 + i * 0.1, type: "spring" }}
+                  >
+                    {profile.throughput}
+                  </motion.div>
+                  <div className="font-section text-[8px]" style={{ color: "var(--ef-gray)" }}>req/s</div>
+                </div>
+              </div>
+
+              {/* Latency Bars */}
+              <div className="space-y-2">
+                <LatencyBar
+                  value={profile.avgLatency}
+                  max={350}
+                  color={profile.color}
+                  label="Avg Latency"
+                  active={active}
+                />
+                <LatencyBar
+                  value={profile.p95}
+                  max={350}
+                  color={profile.color}
+                  label="P95 Latency"
+                  active={active}
+                />
+              </div>
+
+              {/* Requests count */}
+              <div className="mt-3 pt-2 flex justify-between items-center" style={{ borderTop: `1px solid ${profile.color}15` }}>
+                <span className="font-section text-[9px]" style={{ color: "var(--ef-gray)" }}>Total Requests</span>
+                <span className="font-mono text-xs font-bold" style={{ color: "var(--ef-white)" }}>{profile.requests}</span>
               </div>
             </motion.div>
           ))}
         </div>
 
-        {/* Key Insight */}
+        {/* Summary Bar */}
         <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={active ? { opacity: 1, y: 0 } : { opacity: 0, y: 16 }}
-          transition={{ delay: 1 }}
-          className="mt-8 text-center"
+          initial={{ opacity: 0, y: 20 }}
+          animate={active ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
+          transition={{ delay: 0.8 }}
+          className="rounded-xl p-3 flex items-center justify-between"
+          style={{
+            background: "rgba(0,0,0,0.4)",
+            border: "1px solid rgba(0,230,230,0.15)",
+          }}
         >
-          <p className="font-body text-sm" style={{ color: "var(--ef-gray)" }}>
-            <span style={{ color: "var(--ef-green)" }}>✓ Optimal:</span> 10–800 VUs &nbsp;|&nbsp;
-            <span style={{ color: "var(--ef-amber)" }}>⚠ Bottleneck:</span> Beyond 1000+ VUs
-          </p>
+          <div className="flex items-center gap-6">
+            <div className="flex items-center gap-2">
+              <span className="text-lg">📊</span>
+              <div>
+                <div className="font-mono text-sm font-bold" style={{ color: "var(--ef-cyan)" }}>166,719</div>
+                <div className="font-section text-[8px]" style={{ color: "var(--ef-gray)" }}>Total Requests</div>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+
+            </div>
+          </div>
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg" style={{ background: "rgba(16,185,129,0.15)", border: "1px solid rgba(16,185,129,0.3)" }}>
+            <span className="text-sm">🎯</span>
+            <span className="font-section text-xs" style={{ color: "var(--ef-green)" }}>Best P95: 5.49ms</span>
+          </div>
         </motion.div>
       </div>
     </div>

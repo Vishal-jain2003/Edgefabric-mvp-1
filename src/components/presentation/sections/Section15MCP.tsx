@@ -45,7 +45,6 @@ const roadmapItems = [
     color: "var(--ef-purple)",
     items: [
       "MCP self-healing automation",
-      "Chaos testing & rolling upgrades",
     ],
   },
 ];

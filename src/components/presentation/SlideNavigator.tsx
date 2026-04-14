@@ -20,8 +20,8 @@ import { Section22LRUEviction }  from "./sections/Section22LRUEviction";
 import { SectionGetPutDemo }     from "./sections/SectionGetPutDemo";
 
 const SECTIONS = [
-  { label: "INTRO",              code: "01" },
-  { label: "THE TEAM",           code: "02" },
+  { label: "THE TEAM",           code: "01" },
+  { label: "INTRO",              code: "02" },
   { label: "EDGEFABRIC MVP",     code: "03" },
   { label: "ARCHITECTURE",       code: "04" },
   { label: "CONSISTENT HASHING", code: "05" },
@@ -33,14 +33,13 @@ const SECTIONS = [
   { label: "LRU EVICTION",       code: "11" },
   { label: "GET/PUT DEMO",       code: "12" },
   { label: "TESTING & PERF",     code: "13" },
-  { label: "AI-NATIVE DEV",      code: "14" },
-  { label: "FUTURE ROADMAP",     code: "15" },
-  { label: "CONCLUSION",         code: "16" },
+  { label: "FUTURE ROADMAP",     code: "14" },
+  { label: "CONCLUSION",         code: "15" },
 ];
 
 const COMPONENTS = [
-  Section01ColdOpen,
   Section03TeamGallery,
+  Section01ColdOpen,
   Section08EdgeFabric,
   Section09Architecture,
   Section10HashRing,
@@ -52,7 +51,6 @@ const COMPONENTS = [
   Section22LRUEviction,
   SectionGetPutDemo,
   Section16Observability,
-  Section02ScaleShock,
   Section15MCP,
   Section17Closing,
 ];

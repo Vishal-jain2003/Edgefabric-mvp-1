@@ -15,10 +15,6 @@ const takeaways = [
     text: "Nodes fail. Data doesn't. That's replication done right.",
     highlight: "Data doesn't.",
   },
-  {
-    text: "99.97% availability isn't luck. It's architecture.",
-    highlight: "It's architecture.",
-  },
 ];
 
 export function Section17Closing({ active }: Props) {
@@ -74,9 +70,7 @@ export function Section17Closing({ active }: Props) {
             >
               Thank You!
             </div>
-            <div className="font-body text-base" style={{ color: "var(--ef-gray)" }}>
-              Questions? Let's go deeper.
-            </div>
+          
           </motion.div>
         </motion.div>
 
